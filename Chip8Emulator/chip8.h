@@ -19,6 +19,7 @@ class chip8
 
 		unsigned char key[16];
 		bool drawFlag;
+		bool legacycpu;
 
 		void init();
 		void load(const char* str);

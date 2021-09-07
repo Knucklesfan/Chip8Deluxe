@@ -19,7 +19,7 @@ int main(int argc, char** argv)
 
 	cpu.init();
 	cpu.load("ibm.ch8");
-	cpu.printMemory();
+	//cpu.printMemory();
 	bool runprogram = true;
 	while(runprogram)
 	{
@@ -33,14 +33,9 @@ int main(int argc, char** argv)
 				for (int i = 0; i < 64 * 32; i++) {
 					if (cpu.gfx[i] != 0) {
 						pixels[i] = 0xFFFF0000;
-						std::cout << 1;
 					}
 					else {
 						pixels[i] = 0xFF000000;
-						std::cout << 0;
-					}
-					if (i % 64 == 0) {
-						std::cout << "\n";
 					}
 				}
 				

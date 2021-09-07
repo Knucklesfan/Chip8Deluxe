@@ -24,6 +24,7 @@ unsigned short sp;
 
 unsigned char key[16];
 bool drawFlag;
+bool legacycpu;
 
 unsigned char chip8_fontset[80] =
 {
@@ -50,7 +51,7 @@ void chip8::init() {
 	opcode = 0;
 	I = 0;
 	sp = 0;
-
+	legacycpu = true;
 	for (int i = 0; i < 80; ++i)
 		memory[i] = chip8_fontset[i];
 
@@ -132,6 +133,147 @@ void chip8::emulateCycle() {
 
 		break;
 	}
+	case 0x3000: {
+		if (V[opcode & 0x0F00] == opcode & 0x00FF) {
+			pc += 4;
+		}
+		else {
+			pc += 2;
+		}
+		break;
+
+	}
+	case 0x4000: {
+		if (V[opcode & 0x0F00] != opcode & 0x00FF) {
+			pc += 4;
+		}
+		else {
+			pc += 2;
+		}
+		break;
+
+	}
+	
+	case 0x5000: {
+		if (V[opcode & 0x0F00] == opcode & 0x00F0) {
+			pc += 4;
+		}
+		else {
+			pc += 2;
+		}
+		break;
+
+	}
+
+	case 0x9000: {
+		if (V[opcode & 0x0F00] != opcode & 0x00F0) {
+			pc += 4;
+		}
+		else {
+			pc += 2;
+		}
+		break;
+
+	}
+
+	case 0x8000: {
+		unsigned short x = opcode & 0x0F00;
+		unsigned short y = opcode & 0x00F0;
+
+		switch (opcode & 0x000F) {
+			case 0x0: {
+				V[x] = V[y];
+				break;
+			}
+			case 0x1: {
+				V[x] = V[x] | V[y];
+				break;
+			}
+			case 0x2: {
+				V[x] = V[x] & V[y];
+				break;
+			}
+			case 0x3: {
+				V[x] = V[x] ^ V[y];
+				break;
+			}
+			case 0x4: {
+				V[x] = V[x] + V[y];
+				break;
+			}
+			case 0x5: {
+				V[x] = V[x] - V[y];
+				break;
+			}
+			case 0x6: {
+				short lest = V[x] >> 7;
+				if (legacycpu) {
+					V[x] = V[y];
+				}
+				V[x] = V[x] >> 1;
+				V[0xF] = lest;
+				break;
+			}
+			case 0x7: {
+				V[x] = V[y] - V[x];
+				break;
+			}
+			case 0xE: {
+				short lest = V[x] >> 7;
+
+				if (legacycpu) {
+					V[x] = V[y];
+				}
+				V[x] = V[x] << 1;
+				V[0xF] = lest;
+
+				break;
+			}
+
+
+
+
+
+		}
+		pc += 2;
+		break;
+
+	}
+	case 0xB000: {
+		pc = (opcode & 0x0FFF) + V[0];
+		break;
+	}
+	case 0xC000: {
+		unsigned short x = opcode & 0x0F00;
+		V[x] = std::rand() & opcode & 0x00FF;
+		pc += 2;
+		break;
+	}
+	case 0xE000: {
+		pc += 2;
+		break;
+	}
+	case 0xF000: {
+		switch (opcode & 0x00FF) {
+		case 0x07:
+			V[opcode & 0x0F00] = delay_timer;
+			break;
+		case 0x15:
+			delay_timer = V[opcode & 0x0F00];
+			break;
+		case 0x18:
+			sound_timer = V[opcode & 0x0F00];
+			break;
+		case 0x0A:
+			//IMPLEMENT INPUT LATER
+			break;
+		case 0x1E:
+			I += V[opcode & 0x0F00];
+			break;
+		}
+
+		pc += 2;
+	}
 	case 0x0000: {
 		switch (opcode & 0x000F)
 		{
@@ -146,7 +288,8 @@ void chip8::emulateCycle() {
 		case 0x000E: { // 0x00EE: Returns from subroutine  
 
 		  // Execute opcode
-			pc += 2;
+			pc = stack[sp];
+			--sp;
 			break;
 		}
 
