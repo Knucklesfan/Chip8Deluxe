@@ -1,0 +1,3 @@
+﻿  Chip8Emulator.cpp
+C:\Users\bobca\source\repos\Chip8Emulator\Chip8Emulator\Chip8Emulator.cpp(81): warning C4715: 'setupGraphics': not all control paths return a value
+  Chip8Emulator.vcxproj -> C:\Users\bobca\source\repos\Chip8Emulator\Debug\Chip8Emulator.exe
