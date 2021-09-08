@@ -135,43 +135,35 @@ void chip8::emulateCycle() {
 	}
 	case 0x3000: {
 		if (V[(opcode & 0x0F00) >> 8] == (opcode & 0x00FF)) {
-			pc += 4;
-		}
-		else {
 			pc += 2;
 		}
+		pc += 2;
 		break;
 
 	}
 	case 0x4000: {
 		if (V[(opcode & 0x0F00) >> 8] != (opcode & 0x00FF)) {
-			pc += 4;
-		}
-		else {
 			pc += 2;
 		}
+		pc += 2;
 		break;
 
 	}
 	
 	case 0x5000: {
-		if (V[(opcode & 0x0F00) >> 8] == ((opcode & 0x00F0) >> 4)) {
-			pc += 4;
-		}
-		else {
+		if (V[(opcode & 0x0F00) >> 8] == V[((opcode & 0x00F0) >> 4)]) {
 			pc += 2;
 		}
+		pc += 2;
 		break;
 
 	}
 
 	case 0x9000: {
-		if (V[(opcode & 0x0F00) >> 8] != ((opcode & 0x00F0) >> 4)) {
-			pc += 4;
-		}
-		else {
+		if (V[(opcode & 0x0F00) >> 8] != V[((opcode & 0x00F0) >> 4)]) {
 			pc += 2;
 		}
+		pc += 2;
 		break;
 
 	}
@@ -249,7 +241,7 @@ void chip8::emulateCycle() {
 		pc += 2;
 		break;
 	}
-	case 0xE000: {
+	case 0xE000: { //TODO: IMPLEMENT INPUT
 		pc += 2;
 		break;
 	}
@@ -298,13 +290,16 @@ void chip8::emulateCycle() {
 		}
 
 		pc += 2;
+		break;
 	}
 	case 0x0000: {
 		switch (opcode & 0x000F)
 		{
 		case 0x0000: { // 0x00E0: Clears the screen        
 		  // Execute opcode
-			//std::fill_n(gfx, 64 * 32, 0);
+			for (int i = 0; i < 2048; ++i)
+				gfx[i] = 0x0;
+			drawFlag = true;
 			pc += 2;
 
 			break;
@@ -313,14 +308,15 @@ void chip8::emulateCycle() {
 		case 0x000E: { // 0x00EE: Returns from subroutine  
 
 		  // Execute opcode
+			--sp;
 			pc = stack[sp];
-				--sp;
-			
+			pc += 2;
 			break;
 		}
 
 		default:
 			printf("Unknown opcode [0x0000]: 0x%X\n", opcode);
+			break;
 		}
 		break;
 	}

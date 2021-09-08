@@ -1,1 +1,2 @@
 C:\Users\bobca\Documents\GitHub\Chip8Deluxe\Chip8Emulator\Debug\Chip8Emulator.exe
+C:\Users\bobca\Documents\DSSource\Chip8Deluxe\Chip8Emulator\Debug\Chip8Emulator.exe

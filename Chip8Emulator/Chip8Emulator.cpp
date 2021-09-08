@@ -18,7 +18,7 @@ int main(int argc, char** argv)
 	//setupInput();
 
 	cpu.init();
-	cpu.load("test_opcode.ch8");
+	cpu.load("spacein.ch8");
 	cpu.printMemory();
 	bool runprogram = true;
 	while(runprogram)
