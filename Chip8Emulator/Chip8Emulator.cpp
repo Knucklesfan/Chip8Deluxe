@@ -11,6 +11,8 @@ SDL_Renderer* renderer;
 SDL_Texture* texture;
 SDL_Event event;
 int setupGraphics();
+int keyPressed(SDL_Keycode key);
+int keyReleased(SDL_Keycode key);
 
 int main(int argc, char** argv)
 {
@@ -19,7 +21,7 @@ int main(int argc, char** argv)
 
 	cpu.init();
 	cpu.load("spacein.ch8");
-	cpu.printMemory();
+	//cpu.printMemory();
 	bool runprogram = true;
 	while(runprogram)
 	{
@@ -27,8 +29,8 @@ int main(int argc, char** argv)
 		SDL_PollEvent(&evt);
 		
 			cpu.emulateCycle();
-
 			if (cpu.drawFlag) {
+				//cpu.inputout();
 				int pixels[64 * 32];
 				for (int i = 0; i < 64 * 32; i++) {
 					if (cpu.gfx[i] != 0) {
@@ -49,8 +51,20 @@ int main(int argc, char** argv)
 
 			switch (evt.type)
 			{
-			case SDL_QUIT: runprogram = false;  break;
-				/* process other events you want to handle here */
+			case SDL_QUIT: { 
+				runprogram = false;
+				break; 
+			}
+			case SDL_KEYDOWN: {
+
+				keyPressed(evt.key.keysym.sym);
+				break;
+			}
+			case SDL_KEYUP: {
+				keyReleased(evt.key.keysym.sym);
+				break;
+			}
+
 			}
 	}
 	return 0;
@@ -71,6 +85,41 @@ int setupGraphics() {
 		64,
 		32);
 }
+SDL_Keycode keys[] = {
+	SDLK_1,SDLK_2,SDLK_3,SDLK_4, // 1, 2, 3, C
+	SDLK_q,SDLK_w,SDLK_e,SDLK_r, // 4, 5, 6, D
+	SDLK_a,SDLK_s,SDLK_d,SDLK_f, // 7, 8, 9, E
+	SDLK_z,SDLK_x,SDLK_c,SDLK_v, // A, 0, B, F
+};
+
+int keyPressed(SDL_Keycode key) {
+	unsigned short keynum = 0xFF;
+	for (int i = 0; i < 16; i++) {
+		if (keys[i] == key) {
+			keynum = i;
+			break;
+		}
+	}
+	if (keynum != 0xFF) {
+		cpu.key[keynum] = 1;
+	}
+	return 0;
+
+}
+int keyReleased(SDL_Keycode key) {
+	unsigned short keynum = 0xFF;
+	for (int i = 0; i < 16; i++) {
+		if (keys[i] == key) {
+			keynum = i;
+			break;
+		}
+	}
+	if (keynum != 0xFF) {
+		cpu.key[keynum] = 0;
+	}
+	return 0;
+}
+
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
 // Debug program: F5 or Debug > Start Debugging menu
 

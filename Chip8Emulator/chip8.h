@@ -25,6 +25,7 @@ class chip8
 		void load(const char* str);
 		void emulateCycle();
 		void debugdraw();
+		void inputout();
 		void printMemory();
 
 };

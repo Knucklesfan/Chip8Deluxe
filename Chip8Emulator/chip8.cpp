@@ -242,6 +242,21 @@ void chip8::emulateCycle() {
 		break;
 	}
 	case 0xE000: { //TODO: IMPLEMENT INPUT
+		unsigned short x = (opcode & 0x0F00) >> 8;
+		switch (opcode & 0x00FF) {
+			case 0x009E: {
+				if (key[V[x]] == 1) {
+					pc += 2;
+				}
+				break;
+			}
+			case 0x00A1: {
+				if (key[V[x]] == 0) {
+					pc += 2;
+				}
+				break;
+			}
+		}
 		pc += 2;
 		break;
 	}
@@ -259,6 +274,13 @@ void chip8::emulateCycle() {
 			break;
 		case 0x000A:
 			//IMPLEMENT INPUT LATER
+			for (int i = 0; i < 16; i++) {
+				if (key[i] == 1) {
+					pc += 2;
+					break;
+				}
+			}
+
 			break;
 		case 0x001E:
 			I += V[x];
@@ -267,20 +289,19 @@ void chip8::emulateCycle() {
 			I = V[x] * 5;
 			break;
 		case 0x0033: {
-			short number = V[x];
-
-			memory[I] = V[x] / 100;
-			memory[I + 1] = (V[x] / 10) % 10;
-			memory[I + 2] = (V[x] % 100) % 10;
+			memory[I] = V[(opcode & 0x0F00) >> 8] / 100;
+			memory[I + 1] = (V[(opcode & 0x0F00) >> 8] / 10) % 10;
+			memory[I + 2] = (V[(opcode & 0x0F00) >> 8] % 100) % 10;
 			break;
 		}
-		case 0x55: {
+		case 0x0055: {
 			for (int i = 0; i < x; i++) {
 				memory[I + i] = V[i];
 			}
+			I += ((opcode & 0x0F00) >> 8) + 1;
 			break;
 		}
-		case 0x56: {
+		case 0x0056: {
 			for (int i = 0; i < x; i++) {
 				V[i] = memory[I + i];
 			}
@@ -356,5 +377,10 @@ void chip8::debugdraw() {
 		if (i % 64 == 0) {
 			std::cout << "\n";
 		}
+	}
+}
+void chip8::inputout() {
+	for (int i = 0; i < sizeof(key); i++) {
+		std::cout << std::setfill('0') << std::setw(2) << std::hex << (0xff & (unsigned int)key[i]);
 	}
 }
