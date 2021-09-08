@@ -34,10 +34,10 @@ int main(int argc, char** argv)
 				int pixels[64 * 32];
 				for (int i = 0; i < 64 * 32; i++) {
 					if (cpu.gfx[i] != 0) {
-						pixels[i] = 0xFFFF0000;
+						pixels[i] = 0x00FFFF00;
 					}
 					else {
-						pixels[i] = 0xFF000000;
+						pixels[i] = 0x00000000;
 					}
 				}
 				
