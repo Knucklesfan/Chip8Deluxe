@@ -1,13 +1,5 @@
 ﻿  chip8.cpp
-C:\Users\bobca\source\repos\Chip8Emulator\Chip8Emulator\chip8.cpp(63,27): warning C4244: 'argument': conversion from 'std::streamsize' to 'const unsigned int', possible loss of data
-C:\Users\bobca\source\repos\Chip8Emulator\Chip8Emulator\chip8.cpp(137,38): warning C4806: '&': unsafe operation: no value of type 'bool' promoted to type 'int' can equal the given constant
-C:\Users\bobca\source\repos\Chip8Emulator\Chip8Emulator\chip8.cpp(137,44): warning C4554: '&': check operator precedence for possible error; use parentheses to clarify precedence
-C:\Users\bobca\source\repos\Chip8Emulator\Chip8Emulator\chip8.cpp(147,38): warning C4806: '&': unsafe operation: no value of type 'bool' promoted to type 'int' can equal the given constant
-C:\Users\bobca\source\repos\Chip8Emulator\Chip8Emulator\chip8.cpp(147,44): warning C4554: '&': check operator precedence for possible error; use parentheses to clarify precedence
-C:\Users\bobca\source\repos\Chip8Emulator\Chip8Emulator\chip8.cpp(158,38): warning C4806: '&': unsafe operation: no value of type 'bool' promoted to type 'int' can equal the given constant
-C:\Users\bobca\source\repos\Chip8Emulator\Chip8Emulator\chip8.cpp(158,44): warning C4554: '&': check operator precedence for possible error; use parentheses to clarify precedence
-C:\Users\bobca\source\repos\Chip8Emulator\Chip8Emulator\chip8.cpp(169,38): warning C4806: '&': unsafe operation: no value of type 'bool' promoted to type 'int' can equal the given constant
-C:\Users\bobca\source\repos\Chip8Emulator\Chip8Emulator\chip8.cpp(169,44): warning C4554: '&': check operator precedence for possible error; use parentheses to clarify precedence
-C:\Users\bobca\source\repos\Chip8Emulator\Chip8Emulator\chip8.cpp(214,14): warning C4244: '=': conversion from 'short' to 'unsigned char', possible loss of data
-C:\Users\bobca\source\repos\Chip8Emulator\Chip8Emulator\chip8.cpp(228,14): warning C4244: '=': conversion from 'short' to 'unsigned char', possible loss of data
-  Chip8Emulator.vcxproj -> C:\Users\bobca\source\repos\Chip8Emulator\Debug\Chip8Emulator.exe
+C:\Users\bobca\Documents\GitHub\Chip8Deluxe\Chip8Emulator\chip8.cpp(63,27): warning C4244: 'argument': conversion from 'std::streamsize' to 'const unsigned int', possible loss of data
+C:\Users\bobca\Documents\GitHub\Chip8Deluxe\Chip8Emulator\chip8.cpp(214,14): warning C4244: '=': conversion from 'short' to 'unsigned char', possible loss of data
+C:\Users\bobca\Documents\GitHub\Chip8Deluxe\Chip8Emulator\chip8.cpp(228,14): warning C4244: '=': conversion from 'short' to 'unsigned char', possible loss of data
+  Chip8Emulator.vcxproj -> C:\Users\bobca\Documents\GitHub\Chip8Deluxe\Chip8Emulator\Debug\Chip8Emulator.exe

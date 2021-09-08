@@ -20,7 +20,7 @@ unsigned char delay_timer;
 unsigned char sound_timer;
 
 unsigned short stack[16];
-unsigned short sp;
+unsigned short sp = 0;
 
 unsigned char key[16];
 bool drawFlag;
@@ -94,14 +94,14 @@ void chip8::emulateCycle() {
 		break;
 	}
 	case 0x6000: { // 6XNN: Set register at V[X]
-		short tmp = opcode & 0x0F00;
+		short tmp = (opcode & 0x0F00) >> 8;
 		V[tmp] = opcode & 0x00FF;
 		pc += 2;
 
 		break;
 	}
 	case 0x7000: { // 7XNN: Add value to register at V[X]
-		short tmp = opcode & 0x0F00;
+		short tmp = (opcode & 0x0F00) >> 8;
 		V[tmp] += opcode & 0x00FF;
 		pc += 2;
 
@@ -134,7 +134,7 @@ void chip8::emulateCycle() {
 		break;
 	}
 	case 0x3000: {
-		if (V[opcode & 0x0F00] == opcode & 0x00FF) {
+		if (V[(opcode & 0x0F00) >> 8] == (opcode & 0x00FF)) {
 			pc += 4;
 		}
 		else {
@@ -144,7 +144,7 @@ void chip8::emulateCycle() {
 
 	}
 	case 0x4000: {
-		if (V[opcode & 0x0F00] != opcode & 0x00FF) {
+		if (V[(opcode & 0x0F00) >> 8] != (opcode & 0x00FF)) {
 			pc += 4;
 		}
 		else {
@@ -155,7 +155,7 @@ void chip8::emulateCycle() {
 	}
 	
 	case 0x5000: {
-		if (V[opcode & 0x0F00] == opcode & 0x00F0) {
+		if (V[(opcode & 0x0F00) >> 8] == ((opcode & 0x00F0) >> 4)) {
 			pc += 4;
 		}
 		else {
@@ -166,7 +166,7 @@ void chip8::emulateCycle() {
 	}
 
 	case 0x9000: {
-		if (V[opcode & 0x0F00] != opcode & 0x00F0) {
+		if (V[(opcode & 0x0F00) >> 8] != ((opcode & 0x00F0) >> 4)) {
 			pc += 4;
 		}
 		else {
@@ -177,35 +177,35 @@ void chip8::emulateCycle() {
 	}
 
 	case 0x8000: {
-		unsigned short x = opcode & 0x0F00;
-		unsigned short y = opcode & 0x00F0;
+		unsigned short x = (opcode & 0x0F00) >> 8;
+		unsigned short y = (opcode & 0x00F0) >> 4;
 
 		switch (opcode & 0x000F) {
-			case 0x0: {
+			case 0x0000: {
 				V[x] = V[y];
 				break;
 			}
-			case 0x1: {
+			case 0x0001: {
 				V[x] = V[x] | V[y];
 				break;
 			}
-			case 0x2: {
+			case 0x0002: {
 				V[x] = V[x] & V[y];
 				break;
 			}
-			case 0x3: {
+			case 0x0003: {
 				V[x] = V[x] ^ V[y];
 				break;
 			}
-			case 0x4: {
+			case 0x0004: {
 				V[x] = V[x] + V[y];
 				break;
 			}
-			case 0x5: {
+			case 0x0005: {
 				V[x] = V[x] - V[y];
 				break;
 			}
-			case 0x6: {
+			case 0x0006: {
 				short lest = V[x] >> 7;
 				if (legacycpu) {
 					V[x] = V[y];
@@ -214,11 +214,11 @@ void chip8::emulateCycle() {
 				V[0xF] = lest;
 				break;
 			}
-			case 0x7: {
+			case 0x0007: {
 				V[x] = V[y] - V[x];
 				break;
 			}
-			case 0xE: {
+			case 0x000E: {
 				short lest = V[x] >> 7;
 
 				if (legacycpu) {
@@ -244,7 +244,7 @@ void chip8::emulateCycle() {
 		break;
 	}
 	case 0xC000: {
-		unsigned short x = opcode & 0x0F00;
+		unsigned short x = (opcode & 0x0F00) >> 8;
 		V[x] = std::rand() & opcode & 0x00FF;
 		pc += 2;
 		break;
@@ -254,22 +254,47 @@ void chip8::emulateCycle() {
 		break;
 	}
 	case 0xF000: {
+		unsigned short x = (opcode & 0x0F00) >> 8;
 		switch (opcode & 0x00FF) {
-		case 0x07:
-			V[opcode & 0x0F00] = delay_timer;
+		case 0x0007:
+			V[x] = delay_timer;
 			break;
-		case 0x15:
-			delay_timer = V[opcode & 0x0F00];
+		case 0x0015:
+			delay_timer = V[x];
 			break;
-		case 0x18:
-			sound_timer = V[opcode & 0x0F00];
+		case 0x0018:
+			sound_timer = V[x];
 			break;
-		case 0x0A:
+		case 0x000A:
 			//IMPLEMENT INPUT LATER
 			break;
-		case 0x1E:
-			I += V[opcode & 0x0F00];
+		case 0x001E:
+			I += V[x];
 			break;
+		case 0x0029:
+			I = V[x] * 5;
+			break;
+		case 0x0033: {
+			short number = V[x];
+
+			memory[I] = V[x] / 100;
+			memory[I + 1] = (V[x] / 10) % 10;
+			memory[I + 2] = (V[x] % 100) % 10;
+			break;
+		}
+		case 0x55: {
+			for (int i = 0; i < x; i++) {
+				memory[I + i] = V[i];
+			}
+			break;
+		}
+		case 0x56: {
+			for (int i = 0; i < x; i++) {
+				V[i] = memory[I + i];
+			}
+			break;
+
+		}
 		}
 
 		pc += 2;
@@ -279,7 +304,7 @@ void chip8::emulateCycle() {
 		{
 		case 0x0000: { // 0x00E0: Clears the screen        
 		  // Execute opcode
-			std::fill_n(gfx, 64 * 32, 0);
+			//std::fill_n(gfx, 64 * 32, 0);
 			pc += 2;
 
 			break;
@@ -289,7 +314,8 @@ void chip8::emulateCycle() {
 
 		  // Execute opcode
 			pc = stack[sp];
-			--sp;
+				--sp;
+			
 			break;
 		}
 

@@ -18,14 +18,14 @@ int main(int argc, char** argv)
 	//setupInput();
 
 	cpu.init();
-	cpu.load("ibm.ch8");
-	//cpu.printMemory();
+	cpu.load("test_opcode.ch8");
+	cpu.printMemory();
 	bool runprogram = true;
 	while(runprogram)
 	{
 		SDL_Event evt;
-		while (SDL_PollEvent(&evt))
-		{
+		SDL_PollEvent(&evt);
+		
 			cpu.emulateCycle();
 
 			if (cpu.drawFlag) {
@@ -52,9 +52,6 @@ int main(int argc, char** argv)
 			case SDL_QUIT: runprogram = false;  break;
 				/* process other events you want to handle here */
 			}
-		}
-
-		
 	}
 	return 0;
 }
