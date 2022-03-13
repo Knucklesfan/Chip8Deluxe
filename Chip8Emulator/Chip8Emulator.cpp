@@ -16,6 +16,8 @@ int keyReleased(SDL_Keycode key);
 
 int main(int argc, char** argv)
 {
+	const int SPEED = 500; //Hz
+
 	setupGraphics();
 	//setupInput();
 
@@ -23,21 +25,33 @@ int main(int argc, char** argv)
 	cpu.load("spacein.ch8");
 	//cpu.printMemory();
 	bool runprogram = true;
+
+
+	auto last_tick = SDL_GetTicks();
+
 	while(runprogram)
 	{
+		auto frame_start = SDL_GetTicks();
 		SDL_Event evt;
 		SDL_PollEvent(&evt);
-		
+			
 			cpu.emulateCycle();
 			if (cpu.drawFlag) {
 				//cpu.inputout();
 				int pixels[64 * 32];
 				for (int i = 0; i < 64 * 32; i++) {
 					if (cpu.gfx[i] != 0) {
-						pixels[i] = 0x00FFFF00;
+						pixels[i] = 0x00FFFFFF;
+						
 					}
 					else {
+
 						pixels[i] = 0x00000000;
+						pixels[i] += i / 64 << 8;
+						pixels[i] += (i / 64 << 8) << 8;
+						pixels[i] += ((i / 64 << 8) << 8) << 8; //I HAVE NO IDEA
+
+
 					}
 				}
 				
@@ -48,7 +62,15 @@ int main(int argc, char** argv)
 				//return 0;
 				//drawGraphics();
 			}
-
+			auto currtick = SDL_GetTicks();
+			if (currtick - last_tick > 1000 / 60) { //this handles the delay and sound timers. Dunno if i'm doing this right >:)
+				cpu.handleTimers();
+				last_tick = currtick;
+			}
+			auto frame_end = SDL_GetTicks();
+			if (frame_end - frame_start < 1000 / SPEED) { //If running faster than desired speed, add delay
+				SDL_Delay(1000 / SPEED - (frame_end - frame_start)); //run at 500Hz by default
+			}
 			switch (evt.type)
 			{
 			case SDL_QUIT: { 
@@ -66,6 +88,7 @@ int main(int argc, char** argv)
 			}
 
 			}
+
 	}
 	return 0;
 }

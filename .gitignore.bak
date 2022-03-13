@@ -1,0 +1,5 @@
+
+*.recipe
+x64/
+Debug/
+.vs/

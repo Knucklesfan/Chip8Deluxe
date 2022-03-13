@@ -27,6 +27,7 @@ class chip8
 		void debugdraw();
 		void inputout();
 		void printMemory();
+		void handleTimers();
 
 };
 

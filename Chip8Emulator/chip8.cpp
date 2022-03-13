@@ -121,8 +121,9 @@ void chip8::emulateCycle() {
 			{
 				if ((pixel & (0x80 >> xline)) != 0)
 				{
-					if (gfx[(x + xline + ((y + yline) * 64))] == 1)
+					if (gfx[(x + xline + ((y + yline) * 64))] == 1) {
 						V[0xF] = 1;
+					}
 					gfx[x + xline + ((y + yline) * 64)] ^= 1;
 				}
 			}
@@ -295,18 +296,19 @@ void chip8::emulateCycle() {
 			break;
 		}
 		case 0x0055: {
-			for (int i = 0; i < x; i++) {
+			for (int i = 0; i < ((opcode & 0x0F00) >> 8) + 1; ++i)
+			{
 				memory[I + i] = V[i];
 			}
-			I += ((opcode & 0x0F00) >> 8) + 1;
+			I += (((opcode & 0x0F00) >> 8) + 1);
 			break;
 		}
-		case 0x0056: {
-			for (int i = 0; i < x; i++) {
+		case 0x0065: {
+			for (int i = 0; i <= ((opcode & 0x0F00) >> 8); ++i)
+			{
 				V[i] = memory[I + i];
 			}
 			break;
-
 		}
 		}
 
@@ -347,6 +349,8 @@ void chip8::emulateCycle() {
 	}
 
 
+}
+void chip8::handleTimers() {
 	if (delay_timer > 0)
 		--delay_timer;
 
