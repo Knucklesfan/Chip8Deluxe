@@ -1,3 +1,6 @@
 x64/
 Debug/
 .vs/
+*.o
+chip8
+*.bak
