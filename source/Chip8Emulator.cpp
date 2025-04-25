@@ -19,10 +19,10 @@ int main(int argc, char** argv)
 	const int SPEED = 500; //Hz
 
 	setupGraphics();
-	//setupInput();
+	// setupInput();
 
 	cpu.init();
-	cpu.load("spacein.ch8");
+	cpu.load(argv[1]);
 	//cpu.printMemory();
 	bool runprogram = true;
 
